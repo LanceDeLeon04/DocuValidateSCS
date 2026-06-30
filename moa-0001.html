@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Document Validation — NU Laguna SCS Student Council</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     EDITABLE CONTENT — see the CONFIG object near the bottom of
+     this file (inside the <script> tag) to customize the office
+     name, signatory, reference number, etc. for this document.
+     ============================================================ */
+
+  :root{
+    --ink-900:#061226;
+    --ink-800:#0c1f3d;
+    --blue-700:#143868;
+    --blue-500:#2b5a96;
+    --blue-300:#5e8ac2;
+    --gold-300:#f3dd96;
+    --gold-500:#d4af37;
+    --gold-700:#a9842a;
+    --paper:#f7f5ef;
+    --paper-dim:rgba(247,245,239,.62);
+    --glass-fill:rgba(247,245,239,.06);
+    --glass-fill-strong:rgba(247,245,239,.1);
+    --glass-border:rgba(212,175,55,.35);
+    --good:#7fd9a8;
+    --radius-lg:28px;
+    --radius-md:18px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 90% 60% at 50% -10%, rgba(43,90,150,.55), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 85% 105%, rgba(212,175,55,.12), transparent 60%),
+      linear-gradient(180deg, var(--ink-900) 0%, var(--ink-800) 45%, var(--blue-700) 100%);
+    background-attachment:fixed;
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--paper);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* ---------- security-print guilloché backdrop ---------- */
+  .bg-pattern{
+    position:fixed; inset:0;
+    width:100%; height:100%;
+    z-index:0;
+    pointer-events:none;
+    opacity:.5;
+  }
+  .bg-vignette{
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:radial-gradient(ellipse 80% 65% at 50% 38%, transparent 40%, rgba(6,18,38,.65) 100%);
+  }
+
+  .ambient-glow{
+    position:absolute;
+    width:480px; height:480px;
+    top:-40px; left:50%;
+    transform:translateX(-50%);
+    background:radial-gradient(circle, rgba(212,175,55,.18), transparent 65%);
+    filter:blur(10px);
+    z-index:1;
+    pointer-events:none;
+    animation:pulseGlow 7s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{
+    0%,100%{opacity:.65; transform:translateX(-50%) scale(1);}
+    50%{opacity:1; transform:translateX(-50%) scale(1.06);}
+  }
+
+  .shell{
+    position:relative;
+    z-index:2;
+    width:100%;
+    max-width:480px;
+    padding:28px 18px 40px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .main-grid{ width:100%; display:flex; flex-direction:column; align-items:center; }
+  .hero-pane, .details-pane{ width:100%; display:flex; flex-direction:column; align-items:center; }
+
+  /* ---------- header ---------- */
+  header.topbar{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:6px 4px 26px;
+    opacity:0;
+    animation:fadeUp .6s ease forwards;
+    animation-delay:.05s;
+  }
+  .org-mark{
+    flex:none;
+    width:42px; height:42px;
+    border-radius:11px;
+    background:linear-gradient(155deg, rgba(247,245,239,.1), rgba(247,245,239,.02));
+    border:1px solid var(--glass-border);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--gold-300);
+    backdrop-filter:blur(6px);
+  }
+  .org-mark svg{width:22px; height:22px;}
+  .org-text{display:flex; flex-direction:column; line-height:1.25;}
+  .org-text .line1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:.04em;
+    color:var(--paper);
+  }
+  .org-text .line2{
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+  }
+
+  /* ---------- seal / hero ---------- */
+  .seal-stage{
+    position:relative;
+    width:168px; height:168px;
+    margin:8px 0 6px;
+    opacity:0;
+    animation:fadeUp .7s ease forwards;
+    animation-delay:.15s;
+  }
+  .seal-stage svg{width:100%; height:100%; overflow:visible;}
+  .seal-ring-outer{
+    transform-origin:84px 88px;
+    animation:slowSpin 40s linear infinite;
+  }
+  @keyframes slowSpin{ to{ transform:rotate(360deg); } }
+
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--gold-300);
+    background:var(--glass-fill);
+    border:1px solid var(--glass-border);
+    padding:7px 14px 7px 11px;
+    border-radius:999px;
+    margin:10px 0 18px;
+    opacity:0;
+    animation:fadeUp .6s ease forwards;
+    animation-delay:.25s;
+  }
+  .eyebrow svg{width:13px; height:13px; flex:none;}
+  .eyebrow .dot{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--good);
+    box-shadow:0 0 0 0 rgba(127,217,168,.6);
+    animation:dotPulse 2.2s ease-out infinite;
+    flex:none;
+  }
+  @keyframes dotPulse{
+    0%{ box-shadow:0 0 0 0 rgba(127,217,168,.55);}
+    70%{ box-shadow:0 0 0 7px rgba(127,217,168,0);}
+    100%{ box-shadow:0 0 0 0 rgba(127,217,168,0);}
+  }
+
+  h1.status{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(28px, 7.4vw, 36px);
+    line-height:1.12;
+    text-align:center;
+    letter-spacing:-.01em;
+    margin:0 0 14px;
+    color:var(--paper);
+    opacity:0;
+    animation:fadeUp .65s ease forwards;
+    animation-delay:.32s;
+  }
+  h1.status em{
+    font-style:italic;
+    color:var(--gold-300);
+  }
+
+  p.lede{
+    text-align:center;
+    font-size:14.5px;
+    line-height:1.65;
+    color:var(--paper-dim);
+    max-width:360px;
+    margin:0 0 28px;
+    opacity:0;
+    animation:fadeUp .65s ease forwards;
+    animation-delay:.4s;
+  }
+  p.lede strong{ color:var(--paper); font-weight:600; }
+
+  /* ---------- glass details card ---------- */
+  .card{
+    width:100%;
+    background:linear-gradient(165deg, var(--glass-fill-strong), var(--glass-fill));
+    border:1px solid var(--glass-border);
+    border-radius:var(--radius-lg);
+    backdrop-filter:blur(18px) saturate(140%);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+    box-shadow:0 24px 60px -20px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+    padding:6px;
+    opacity:0;
+    animation:fadeUp .7s ease forwards;
+    animation-delay:.48s;
+  }
+
+  .card-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 16px 12px;
+  }
+  .card-head .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold-300);
+  }
+  .card-head .badge-ok{
+    display:flex; align-items:center; gap:5px;
+    font-size:11px; font-weight:600;
+    color:var(--good);
+    background:rgba(127,217,168,.1);
+    border:1px solid rgba(127,217,168,.3);
+    padding:4px 10px;
+    border-radius:999px;
+  }
+  .card-head .badge-ok svg{width:11px; height:11px;}
+
+  .divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(212,175,55,.4), transparent); margin:0 16px; }
+
+  .detail-row{
+    display:flex;
+    align-items:flex-start;
+    gap:13px;
+    padding:15px 16px;
+  }
+  .detail-row + .detail-row{ border-top:1px solid rgba(247,245,239,.07); }
+  .detail-icon{
+    flex:none;
+    width:34px; height:34px;
+    border-radius:10px;
+    background:rgba(212,175,55,.1);
+    border:1px solid rgba(212,175,55,.25);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--gold-300);
+  }
+  .detail-icon svg{width:17px; height:17px;}
+  .detail-text{ flex:1; min-width:0; padding-top:1px;}
+  .detail-text .k{
+    font-size:10.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    margin-bottom:3px;
+  }
+  .detail-text .v{
+    font-size:14.5px;
+    font-weight:500;
+    color:var(--paper);
+    word-break:break-word;
+  }
+  .detail-text .v.mono{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+    letter-spacing:.02em;
+    color:var(--gold-300);
+  }
+
+  /* ---------- footer ---------- */
+  .auth-strip{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    margin-top:18px;
+    padding:13px 16px;
+    border-radius:var(--radius-md);
+    background:rgba(247,245,239,.04);
+    border:1px solid rgba(247,245,239,.1);
+    opacity:0;
+    animation:fadeUp .7s ease forwards;
+    animation-delay:.56s;
+  }
+  .auth-strip svg{ width:18px; height:18px; flex:none; color:var(--gold-300); }
+  .auth-strip .t{ font-size:12.5px; line-height:1.5; color:var(--paper-dim); }
+  .auth-strip .t b{ color:var(--paper); font-weight:600; }
+
+  footer{
+    width:100%;
+    max-width:480px;
+    text-align:center;
+    padding:30px 20px 10px;
+    position:relative;
+    z-index:2;
+    opacity:0;
+    animation:fadeUp .7s ease forwards;
+    animation-delay:.64s;
+  }
+  footer .org{
+    font-size:12px;
+    color:var(--paper-dim);
+    line-height:1.6;
+  }
+  footer .org b{ color:var(--paper); font-weight:600; }
+  footer .fine{
+    font-size:10.5px;
+    color:rgba(247,245,239,.35);
+    margin-top:10px;
+    letter-spacing:.01em;
+  }
+
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+    .seal-ring-outer{ animation:none; }
+  }
+
+  @media (max-width:360px){
+    h1.status{ font-size:26px; }
+  }
+
+  /* ================================================================
+     DESKTOP / LANDSCAPE — fills the viewport, no scrolling needed.
+     Below this width or in portrait, the original mobile single
+     column (scrollable) layout above still applies untouched.
+     ================================================================ */
+  @media (min-width:760px) and (orientation:landscape){
+    html, body{ height:100vh; overflow:hidden; }
+
+    .ambient-glow{
+      width:46vh; height:46vh;
+      top:50%; left:25%;
+      transform:translate(-50%,-50%);
+      animation:pulseGlow 7s ease-in-out infinite;
+    }
+
+    .shell{
+      max-width:1180px;
+      width:92vw;
+      height:min(92vh, 780px);
+      max-height:92vh;
+      padding:clamp(14px,2.4vh,26px) clamp(22px,3.2vw,44px) clamp(10px,2vh,18px);
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      align-items:stretch;
+      gap:0;
+      min-height:0;
+    }
+
+    header.topbar{ padding:0 0 clamp(6px,1.2vh,14px); animation-delay:.05s; }
+
+    .main-grid{
+      display:grid;
+      grid-template-columns:1fr 1.08fr;
+      align-items:center;
+      gap:clamp(28px,5vw,64px);
+      width:100%;
+      height:100%;
+      min-height:0;
+      overflow:hidden;
+    }
+
+    .hero-pane{
+      align-items:flex-start;
+      text-align:left;
+      justify-content:center;
+      height:100%;
+      min-height:0;
+    }
+    .hero-pane .seal-stage{
+      width:clamp(86px,15vh,140px);
+      height:clamp(96px,17vh,156px);
+      margin:0 0 clamp(8px,1.6vh,16px);
+    }
+    .hero-pane .eyebrow{ margin:0 0 clamp(10px,1.8vh,18px); }
+    .hero-pane h1.status{
+      text-align:left;
+      font-size:clamp(22px,4vh,34px);
+      margin:0 0 clamp(8px,1.6vh,14px);
+    }
+    .hero-pane p.lede{
+      text-align:left;
+      max-width:380px;
+      margin:0;
+      font-size:clamp(12.5px,1.9vh,14.5px);
+    }
+
+    .details-pane{ height:100%; justify-content:center; min-height:0; }
+    .details-pane .card{ width:100%; }
+    .details-pane .auth-strip{ margin-top:clamp(10px,1.8vh,18px); }
+
+    .card-head{ padding:clamp(10px,1.8vh,16px) 16px clamp(8px,1.4vh,12px); }
+    .detail-row{ padding:clamp(8px,1.6vh,15px) 16px; }
+    .detail-icon{ width:clamp(28px,4.6vh,34px); height:clamp(28px,4.6vh,34px); }
+    .detail-icon svg{ width:15px; height:15px; }
+    .detail-text .v{ font-size:clamp(13px,1.9vh,14.5px); }
+
+    .auth-strip{ padding:clamp(9px,1.6vh,13px) 16px; }
+    .auth-strip .t{ font-size:clamp(11.5px,1.6vh,12.5px); }
+
+    footer{
+      max-width:none;
+      padding:clamp(8px,1.6vh,16px) 4px 0;
+      text-align:center;
+    }
+    footer .fine{ margin-top:4px; }
+  }
+</style>
+</head>
+<body>
+
+<svg class="bg-pattern" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="guilloche" width="110" height="110" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#d4af37" stroke-width="0.6">
+        <circle cx="55" cy="55" r="8"/>
+        <circle cx="55" cy="55" r="22"/>
+        <circle cx="55" cy="55" r="36"/>
+        <circle cx="55" cy="55" r="50"/>
+        <circle cx="0" cy="0" r="36"/>
+        <circle cx="110" cy="0" r="36"/>
+        <circle cx="0" cy="110" r="36"/>
+        <circle cx="110" cy="110" r="36"/>
+      </g>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#guilloche)"/>
+</svg>
+<div class="bg-vignette"></div>
+<div class="ambient-glow"></div>
+
+<div class="shell">
+
+  <header class="topbar">
+    <div class="org-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l8 3.6v4.9c0 5-3.4 8.4-8 9.5-4.6-1.1-8-4.5-8-9.5V6.6L12 3z"/>
+        <path d="M9 12.2l2.1 2.1L15.5 10"/>
+      </svg>
+    </div>
+    <div class="org-text">
+      <span class="line1" id="orgShort">NU LAGUNA SCS</span>
+      <span class="line2" id="orgOffice">Office of the President</span>
+    </div>
+  </header>
+
+  <main class="main-grid">
+  <section class="hero-pane">
+
+  <div class="seal-stage">
+    <svg viewBox="0 0 168 188" fill="none">
+      <defs>
+        <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#f3dd96"/>
+          <stop offset="1" stop-color="#c9982f"/>
+        </linearGradient>
+      </defs>
+      <!-- ribbon tails -->
+      <path d="M60 122 L36 178 L66 167 L78 184 L82 128 Z" fill="url(#goldGrad)" opacity=".88"/>
+      <path d="M108 122 L132 178 L102 167 L90 184 L86 128 Z" fill="url(#goldGrad)" opacity=".88"/>
+      <!-- soft glass disc -->
+      <circle cx="84" cy="78" r="64" fill="rgba(247,245,239,0.05)"/>
+      <!-- outer dashed ring (rotates) -->
+      <g class="seal-ring-outer">
+        <circle cx="84" cy="78" r="62" fill="none" stroke="url(#goldGrad)" stroke-width="1.4" stroke-dasharray="2 7"/>
+      </g>
+      <!-- solid ring -->
+      <circle cx="84" cy="78" r="52" fill="none" stroke="url(#goldGrad)" stroke-width="3.2"/>
+      <!-- check -->
+      <path d="M58 80 L78 100 L112 58" fill="none" stroke="url(#goldGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <div class="eyebrow">
+    <span class="dot"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v5.3c0 5.2-3.5 8.7-8 9.7-4.5-1-8-4.5-8-9.7V5.5L12 2z"/></svg>
+    Verification successful
+  </div>
+
+  <h1 class="status">This document<br>is <em>valid</em> and original.</h1>
+
+  <p class="lede">This QR code was issued by the <strong>SCS Student Council — Office of the President</strong>, confirming the signature and contents below are authentic and have not been altered.</p>
+
+  </section>
+
+  <section class="details-pane">
+
+  <div class="card">
+    <div class="card-head">
+      <span class="label">Verification Record</span>
+      <span class="badge-ok">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        Authentic
+      </span>
+    </div>
+    <div class="divider"></div>
+
+    <div class="detail-row">
+      <div class="detail-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M15 2v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+      </div>
+      <div class="detail-text">
+        <div class="k">Document</div>
+        <div class="v" id="docType">Memorandum No. 9 s. 2026</div>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v5"/><path d="M7 13l2.5 2.5L15 10"/></svg>
+      </div>
+      <div class="detail-text">
+        <div class="k">Authorized signatory</div>
+        <div class="v" id="signatory">President, SCS Student Council</div>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l4 4M4 4l16 16M4 4v5M4 4h5"/><circle cx="15.5" cy="15.5" r="5.5"/><path d="M15.5 13v5M13 15.5h5"/></svg>
+      </div>
+      <div class="detail-text">
+        <div class="k">Reference no.</div>
+        <div class="v mono" id="refNo">SCS-OP-0000</div>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+      </div>
+      <div class="detail-text">
+        <div class="k">Checked on</div>
+        <div class="v mono" id="verifiedOn">—</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="auth-strip">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    <span class="t">Secured by QR verification. <b>Any copy of this document without a matching, working QR code should be treated as unverified.</b></span>
+  </div>
+
+  </section>
+  </main>
+
+  <footer>
+  <div class="org" id="orgFull">
+    <b>National University Laguna — School of Computer Studies</b><br>
+    Student Council, Office of the President
+  </div>
+  <div class="fine">This page confirms authenticity only and does not store personal data.</div>
+  </footer>
+
+</div>
+
+<script>
+  /* ============================================================
+     CONFIG — edit the values below for each document/QR you issue.
+     Everything on the page updates automatically from this object.
+     ============================================================ */
+  const CONFIG = {
+    orgShort:    "NU LAGUNA SCS",
+    office:      "Office of the President",
+    orgFullLine: "National University Laguna — School of Computer Studies",
+    orgSubLine:  "Student Council, Office of the President",
+
+    documentType: "Memorandum of Agreement with Studio8", // e.g. "Certificate of Recognition"
+    signatoryName: "",              // e.g. "Juan D. Dela Cruz"
+    signatoryTitle: "President, SCS Student Council",
+    referenceNo: "SCS-OP-0002",     // give each document/QR a unique code
+
+    // Leave as null to always show the date/time the QR was scanned.
+    // Set a fixed string (e.g. "June 27, 2026") to lock it to issuance date instead.
+    fixedVerifiedDate: null
+  };
+
+  document.getElementById('orgShort').textContent = CONFIG.orgShort;
+  document.getElementById('orgOffice').textContent = CONFIG.office;
+  document.getElementById('docType').textContent = CONFIG.documentType;
+  document.getElementById('signatory').textContent =
+    CONFIG.signatoryName ? `${CONFIG.signatoryName} — ${CONFIG.signatoryTitle}` : CONFIG.signatoryTitle;
+  document.getElementById('refNo').textContent = CONFIG.referenceNo;
+  document.querySelector('#orgFull').innerHTML =
+    `<b>${CONFIG.orgFullLine}</b><br>${CONFIG.orgSubLine}`;
+
+  function formatNow(){
+    const d = new Date();
+    const date = d.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
+    const time = d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    return `${date} · ${time}`;
+  }
+
+  const verifiedEl = document.getElementById('verifiedOn');
+  if(CONFIG.fixedVerifiedDate){
+    verifiedEl.textContent = CONFIG.fixedVerifiedDate;
+  } else {
+    verifiedEl.textContent = formatNow();
+    setInterval(()=>{ verifiedEl.textContent = formatNow(); }, 1000);
+  }
+</script>
+
+</body>
+</html>
